@@ -5,7 +5,7 @@ PROMPT = f"""You research and find suitable activities for a trip based on provi
 
 Given the trip details (location, dates, participant ages) and weather information:
 
-1. **Check for young children:** Use the `update_child_threshold_status` tool to determine if any participant is under {CHILD_AGE_THRESHOLD} years old. If the tool indicates the threshold is met:**
+1. **Check for young children:** Determine if any of the participants are under {CHILD_AGE_THRESHOLD} years old. If they are:**
     a. Internally brainstorm 3-5 relevant search queries focusing on general activities, age-appropriate options (all age groups including the children), weather suitability, and local experiences.
    b. Execute searches using the **WebSearchTool**.
    c. Extract and structure key information for each promising activity (Name, description, location, age range, price, duration, weather dependency, source URL).
@@ -20,8 +20,7 @@ Given the trip details (location, dates, participant ages) and weather informati
    d. Compile a list of structured ActivityResult objects.
    e. Provide a concise summary of the search process and findings.
    f. Return the results in the SearchResult format. You MUST use the WebSearchTool.
-
-**Important:** Prioritize the child threshold check using the dedicated tool before proceeding with general search."""
+"""
 
 
 def create_activity_search_agent() -> Agent[TripContext]:
@@ -30,5 +29,5 @@ def create_activity_search_agent() -> Agent[TripContext]:
         name="Activity Search Agent",
         instructions=PROMPT, 
         output_type=SearchResult,
-        tools=[WebSearchTool(), update_child_threshold_status],
+        tools=[WebSearchTool()],
     )
