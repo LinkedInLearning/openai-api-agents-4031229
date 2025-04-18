@@ -1,0 +1,37 @@
+[project]
+name = "mcp-server-weather"
+version = "0.1.0"
+description = "A Model Context Protocol server providing tools for weather forecasts and current weather conditions"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    { name = "Weather Service", email = "weather@example.com" },
+]
+keywords = ["weather", "forecast", "mcp", "llm"]
+license = { text = "MIT" }
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+]
+dependencies = [
+    "mcp[cli]>=1.0.0",
+    "pydantic>=2.0.0",
+    "httpx>=0.28.1",
+]
+
+[project.scripts]
+mcp-server-weather = "mcp_server_weather:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = [
+    "pyright>=1.1.389",
+    "pytest>=8.3.3",
+    "ruff>=0.8.1",
+]
