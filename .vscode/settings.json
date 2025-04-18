@@ -12,6 +12,7 @@
   "editor.smoothScrolling": true,
   "editor.tabSize": 2,
   "editor.useTabStops": true,
+  "editor.wordWrap": "on",
   "emmet.triggerExpansionOnTab": true,
   "files.autoSave": "afterDelay",
   "terminal.integrated.fontSize": 18,

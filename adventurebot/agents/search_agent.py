@@ -1,6 +1,3 @@
-from typing import List, Optional
-from pydantic import BaseModel
-
 from agents import Agent, WebSearchTool, handoff
 from ..tools.context_tools import update_child_threshold_status
 from ..models import TripContext, CHILD_AGE_THRESHOLD, ActivityResult, SearchResult  # Import models from ..models

@@ -11,11 +11,11 @@ async def main() -> None:
     """
     # Sample trip query data
     query = TripQuery(
-        start_date="2025-04-18",
-        end_date="2025-04-21",
-        location="Bowen Island, British Columbia",
-        participant_number=5,
-        participant_ages=[47, 47, 40, 40, 8]
+        start_date="2025-06-05",
+        end_date="2025-07-14",
+        location="Amsterdam",
+        participant_number=2,
+        participant_ages=[32, 35]
     )
     
     # Initialize and run the adventure manager
