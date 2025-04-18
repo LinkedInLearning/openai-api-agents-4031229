@@ -1,28 +1,22 @@
 from datetime import datetime
-from typing import Optional, List, Sequence  # Add Sequence
+from typing import Optional, List
 from pydantic import BaseModel
 
-from agents import Agent
-from agents.mcp import MCPServer  # Import MCPServer base class for type hinting
+from agents import Agent, WebSearchTool
 from ..models import TripContext 
 
-PROMPT = f"""You are a weather analyst that helps travelers prepare for their trip using provided weather tools.
+PROMPT = f"""You are a weather analyst that helps travelers prepare for their trip.
         The current date is {datetime.now().date()}.
 
-        1. Determine the latitude and longitude for the trip destination.
-        2. Determine if the trip start date is within 7 days from the current date (use the 'get_forecast' tool for this). The forecast tool provides a 7-day forecast.
-        3. If the trip is within 7 days: 
-           - Use the 'get_forecast' tool to get the daily forecast.
-           - Extract relevant information (temperature range, precipitation, weather code) for the specific trip dates.
-           - Provide a summary, temperature range, precipitation chance, clothing recommendations, and any warnings based *only* on the forecast data.
-        4. If the trip is more than 7 days away:
-           - Use the 'get_current_weather' tool to get the current conditions as a general indicator.
-           - Provide a summary based on current conditions, stating that a specific forecast is not yet available. Include general clothing recommendations for the current weather.
-           - Set temperature_range to the current temperature (as both min and max).
-           - Set precipitation_chance based on current precipitation.
-        5. Return a structured analysis using the WeatherAnalysis format.
+        1. Determine if the trip start date is within 10 days from the current date.
+        2. If the trip is within 10 days: Provide a specific (simulated) forecast including temperature range, precipitation chance, clothing recommendations, and any warnings.
+        3. If the trip is more than 10 days away: 
+           - Use the web search tool to find historical weather patterns and climate information for the location and month(s) of the trip.
+           - Provide general recommendations based on historical averages/typical conditions (temperature range, precipitation chance, clothing).
+           - Do not specify a year, just the month and location for the search.
+        4. Return a structured analysis using the WeatherAnalysis format.
         
-        Always use the 'get_forecast' or 'get_current_weather' tools. Do not use web search."""
+        Always use the web search tool if the trip is more than 10 days away."""
 
 class WeatherAnalysis(BaseModel):
     """Weather analysis with recommendations"""
@@ -33,19 +27,16 @@ class WeatherAnalysis(BaseModel):
     weather_warnings: Optional[List[str]] = None
 
 
-def create_weather_agent(mcp_servers: Sequence[MCPServer]) -> Agent[TripContext]:  
-    """Create a weather analysis agent that provides weather information for a trip using provided MCP servers.
+def create_weather_agent() -> Agent[TripContext]:  
+    """Create a weather analysis agent that provides weather information for a trip.
     
-    It uses the 'get_forecast' tool for trips within 7 days and 'get_current_weather'
-    for trips further out.
-
-    Args:
-        mcp_servers: A sequence of already initialized MCP server instances.
+    It uses web search for dates more than 10 days in the future and provides
+    general recommendations based on historical data for those cases.
+    For dates within 10 days, it provides a more specific forecast (simulated).
     """
     return Agent[TripContext](  
         name="Weather Agent",
         instructions=PROMPT,
         output_type=WeatherAnalysis,
-        # Use the passed-in mcp_servers
-        mcp_servers=mcp_servers, 
+        tools=[WebSearchTool()],
     )

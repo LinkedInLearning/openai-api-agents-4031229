@@ -1,6 +1,5 @@
 from agents import Runner, trace, gen_trace_id, Agent
 from agents.result import RunResult
-from agents.mcp import MCPServerStdio
 from .models import TripQuery, TripContext
 from .agents import (
     create_weather_agent, WeatherAnalysis,
@@ -39,37 +38,22 @@ class AdventureManager:
             self._print_trip_plan(trip_plan)
 
     async def _get_weather_info(self, context: TripContext) -> WeatherAnalysis:
-        """Run the WeatherAgent to get weather information, managing MCP server lifecycle."""
-        print("Initializing and connecting to Weather MCP server...")
+        """Run the WeatherAgent to get weather information."""
+        print("Fetching weather information...")
 
-        # Define and connect to the MCP server explicitly
-        weather_mcp_server = MCPServerStdio(
-            params={
-                "command": "docker",
-                "args": ["run", "--rm", "-i", "mcp_server_weather"],
-            }
+        input_str = (
+            f"Get weather analysis for a trip to {context.query.location} "
+            f"from {context.query.start_date} to {context.query.end_date}."
         )
 
-        async with weather_mcp_server as server:
-            print("Weather MCP server connected. Creating Weather Agent...")
-            weather_agent = create_weather_agent(mcp_servers=[server])
+        result = await Runner.run(
+            self.weather_agent,
+            input_str,
+            context=context
+        )
 
-            print("Fetching weather information using Weather Agent...")
-            input_str = (
-                f"Get weather analysis for a trip to {context.query.location} "
-                f"from {context.query.start_date} to {context.query.end_date}."
-            )
-
-            result = await Runner.run(
-                weather_agent,
-                input_str,
-                context=context
-            )
-
-            weather_info = result.final_output_as(WeatherAnalysis)
-            print("Weather information fetched.")
-        
-        print("Weather MCP server disconnected.")
+        weather_info = result.final_output_as(WeatherAnalysis)
+        print("Weather information fetched.")
         return weather_info
 
     async def _search_for_activities(self, context: TripContext, weather_info: WeatherAnalysis) -> tuple[SearchResult, Agent]:
