@@ -1,6 +1,3 @@
-from typing import List, Optional
-from pydantic import BaseModel
-
 from agents import Agent, WebSearchTool
 from ..models import TripContext, SearchResult  # Import SearchResult from ..models
 

@@ -9,7 +9,7 @@ from .agents import (
 
 
 class AdventureManager:
-    """Manages the simplified adventure planning workflow with handoff and custom tool examples."""
+    """Manages the simplified adventure planning workflow with custom tool examples."""
 
     def __init__(self):
         self.activity_search_agent: Agent[TripContext] = create_activity_search_agent()
@@ -28,7 +28,7 @@ class AdventureManager:
             # 1. Get Weather Information
             weather_info = await self._get_weather_info(trip_context)
 
-            # 2. Search for Activities (potentially involves handoff)
+            # 2. Search for Activities
             search_results, search_agent_used = await self._search_for_activities(trip_context, weather_info)
 
             # 3. Generate Trip Plan (includes evaluation and recommendations)
@@ -57,8 +57,8 @@ class AdventureManager:
         return weather_info
 
     async def _search_for_activities(self, context: TripContext, weather_info: WeatherAnalysis) -> tuple[SearchResult, Agent]:
-        """Run the ActivitySearchAgent, handling potential handoff to KidFriendlyActivityAgent."""
-        print("Searching for activities (checking for kid-friendly handoff)...")
+        """Run the ActivitySearchAgent"""
+        print("Searching for activities...")
 
         # Prepare input string including trip details and weather context
         participants_str = f"{context.query.participant_number} participants (ages: {context.query.participant_ages})"
@@ -79,11 +79,8 @@ class AdventureManager:
         search_results = result.final_output_as(SearchResult)
         final_agent = result.last_agent
 
-        # Log if a handoff occurred
-        if final_agent.name != self.activity_search_agent.name:
-            print(f"Handoff occurred: Activities found by {final_agent.name}.")
-        else:
-            print(f"Activity search complete (using {final_agent.name}).")
+        # Log when the agent is done
+        print(f"Activity search complete (using {final_agent.name}).")
 
         return search_results, final_agent
 
