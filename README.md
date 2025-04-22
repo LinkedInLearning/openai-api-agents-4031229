@@ -1,4 +1,4 @@
-# COURSENAME
+# OpenAI API: Agents SDK
 
 This is the repository for the LinkedIn Learning course `OpenAI Agents SDK`. The full course is available from [LinkedIn Learning][lil-course-url].
 
