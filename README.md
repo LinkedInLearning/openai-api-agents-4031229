@@ -26,17 +26,12 @@ pip install -r requirements.txt
 
 You need an OpenAI API key to run the Agents SDK. Get your key at [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys)
 
-To use the API key, either install the key into your environment:
+To use the API key, install the key into your environment:
 
 ```bash
 export OPENAI_API_KEY=<your-key-here>
 ```
 
-or create a `.env` file in the root with the value:
-
-```json
-OPENAI_API_KEY=<your-key-here>
-```
 
 ## Instructor
 
